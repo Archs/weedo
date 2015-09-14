@@ -158,7 +158,7 @@ type systemStatus struct {
 }
 
 type topology struct {
-	DataCenters dataCenter
+	DataCenters []dataCenter
 	Free        int
 	Max         int
 	Layouts     []layout
