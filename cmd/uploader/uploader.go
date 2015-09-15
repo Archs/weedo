@@ -51,6 +51,10 @@ func uploadFile(path string) error {
 }
 
 func uploadDirectory(dirPath string) error {
+	if !recursive {
+		log.Println(dirPath, "is a directory")
+		return nil
+	}
 	log.Println("Uploading directory:", dirPath, "...")
 	walkFn := func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -104,5 +108,10 @@ func main() {
 		if err != nil {
 			log.Println("Uploading", fpath, "failed:", err.Error())
 		}
+	}
+	// print out fids
+	log.Println("Uploading done:")
+	for fid, fpath := range fmap {
+		println(fid, "\t", fpath)
 	}
 }
