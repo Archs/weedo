@@ -44,7 +44,7 @@ func (f *Fid) VolumeID() string {
 
 // Fid in string form
 func (f *Fid) String() string {
-	return fmt.Sprintf("%d,%x%8x", f.Id, f.Key, f.Cookie)
+	return fmt.Sprintf("%d,%x%08x", f.Id, f.Key, f.Cookie)
 }
 
 // Set Fid.Key to current nano seconds since 1970's

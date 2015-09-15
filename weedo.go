@@ -107,7 +107,7 @@ func ParseFid(s string) (fid Fid, err error) {
 
 // Fid in string form
 func (f *Fid) String() string {
-	return fmt.Sprintf("%d,%x%8x", f.Id, f.Key, f.Cookie)
+	return fmt.Sprintf("%d,%x%08x", f.Id, f.Key, f.Cookie)
 }
 
 // First, contact with master server and assign a fid, then upload to volume server
