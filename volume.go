@@ -50,21 +50,6 @@ func (v *Volume) Upload(fid string, version int, filename, mimeType string, file
 	return
 }
 
-// Upload File Directly
-func (v *Volume) Submit(filename, mimeType string, file io.Reader) (fid string, size int64, err error) {
-	data, contentType, err := makeFormData(filename, mimeType, file)
-	if err != nil {
-		return
-	}
-	resp, err := upload(v.Url+"/submit", contentType, data)
-	if err == nil {
-		fid = resp.Fid
-		size = resp.Size
-	}
-
-	return
-}
-
 // Delete File
 func (v *Volume) Delete(fid string, count int) (err error) {
 	if count <= 0 {
