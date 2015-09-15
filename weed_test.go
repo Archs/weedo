@@ -51,21 +51,6 @@ func TestMasterSubmit(t *testing.T) {
 	t.Log("master submit", filename, fid, size)
 }
 
-func TestVolumeSubmit(t *testing.T) {
-	file, err := os.Open(filename)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	vol := NewVolume("localhost:8080", "localhost:8080")
-	fid, size, err := vol.Submit(filename, "text/plain", file)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	t.Log("volume submit", filename, fid, size)
-}
-
 func TestGetUrl(t *testing.T) {
 	file, err := os.Open(filename)
 	if err != nil {
