@@ -5,12 +5,14 @@ import (
 )
 
 var (
-	mmap = map[string]int{}
+	mmap   = map[string]int{}
+	mslice = []string{}
 )
 
 func init() {
 	ss := strings.Split(mimeData, "\n")
 	for idx, mtype := range ss {
+		mslice = append(mslice, mtype)
 		mmap[mtype] = idx
 	}
 }
