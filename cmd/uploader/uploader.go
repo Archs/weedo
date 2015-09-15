@@ -42,7 +42,7 @@ var (
 
 func uploadFile(path string) error {
 	log.Println("\t", path, "...")
-	fid, err := client.AssignUploadTK(path)
+	fid, err := client.UploadFileTK(path)
 	if err != nil {
 		return err
 	}
