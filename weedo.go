@@ -9,10 +9,12 @@ import (
 	"github.com/Archs/weedo/timekey"
 	"io"
 	"log"
+	"mime"
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
 	"os"
+	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -150,8 +152,8 @@ func (c *Client) AssignUpload(filename, mimeType string, file io.Reader) (fid st
 	return
 }
 
-// Assign Fid using timekey.Fid
-func (c *Client) AssignUploadTK(fullPath string) (fid string, err error) {
+// uinsg time/cookie as Fid
+func (c *Client) AssignUploadTK(filename string, r io.Reader, fileSize int) (fid string, err error) {
 	fid, err = c.Master().Assign()
 	if err != nil {
 		return
@@ -161,27 +163,33 @@ func (c *Client) AssignUploadTK(fullPath string) (fid string, err error) {
 		return
 	}
 	// insert self defined key using timekey
-	err = tkfid.InsertKeyAndCookie(fullPath)
-	if err != nil {
-		return
-	}
+	tkfid.InsertTimeKey()
+	tkfid.InsertCookie(fileSize, mime.TypeByExtension(path.Ext(filename)))
 	fid = tkfid.String()
 	// find vold
 	vol, err := c.Volume(fid, "")
 	if err != nil {
-		return
+		return fid, err
 	}
-	// do upload
-	r, err := os.Open(fullPath)
-	if err != nil {
-		return
-	}
-	defer r.Close()
-	// get filename
-	filename := filepath.Base(fullPath)
-	// upload
 	_, err = vol.Upload(fid, filename, tkfid.MimeType(), r)
 	return
+}
+
+// Assign Fid using timekey.Fid
+func (c *Client) UploadFileTK(fullPath string) (fid string, err error) {
+	// get filename
+	filename := filepath.Base(fullPath)
+	info, err := os.Stat(fullPath)
+	if err != nil {
+		return "", err
+	}
+	r, err := os.Open(fullPath)
+	if err != nil {
+		return "", err
+	}
+	defer r.Close()
+	// upload
+	return c.AssignUploadTK(filename, r, int(info.Size()))
 }
 
 func (c *Client) Delete(fid string, count int) (err error) {

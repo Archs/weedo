@@ -50,7 +50,7 @@ func (f *Fid) String() string {
 // Set Fid.Key to current nano seconds since 1970's
 // which is monotonouse increased :)
 // Let's hope this key would not collides with each other
-func (f *Fid) insertKey() {
+func (f *Fid) InsertTimeKey() {
 	f.Key = uint64(time.Now().UnixNano())
 }
 
@@ -58,29 +58,38 @@ func (f *Fid) insertKey() {
 // Fid.Cookie contains the mime type info and file size(in KB)
 // midx takes the left 10 bits   mask: 0xffc00000
 // size tekes the rigth 22 bits  mask: 0x003fffff
-func (f *Fid) insertCookie(fullPath string) error {
-	// cookie
-	mtype := mime.TypeByExtension(path.Ext(fullPath))
+func (f *Fid) InsertCookie(dataSize int, mimeType ...string) {
+	// midx
+	mtype := defaultMimeType
+	if len(mimeType) > 0 {
+		mtype = mimeType[0]
+	}
 	idx, ok := mmap[mtype]
 	if !ok {
 		idx = mmap[defaultMimeType]
 	}
 	midx := uint32(idx) << 22
+
+	// size
+	size := uint32(dataSize / 1024) // count in KB
+	if size == 0 {
+		size = 1
+	}
+	// set cookie
+	f.Cookie = midx + size
+	return
+}
+
+func (f *Fid) InsertKeyAndCookie(fullPath string) error {
+	f.InsertTimeKey()
+	// cookie
+	mtype := mime.TypeByExtension(path.Ext(fullPath))
 	info, err := os.Stat(fullPath)
 	if err != nil {
 		return err
 	}
-	size := uint32(info.Size() / 1024) // count in KB
-	if size == 0 {
-		size = 1
-	}
-	f.Cookie = midx + size
+	f.InsertCookie(int(info.Size()), mtype)
 	return nil
-}
-
-func (f *Fid) InsertKeyAndCookie(fullPath string) error {
-	f.insertKey()
-	return f.insertCookie(fullPath)
 }
 
 func (f *Fid) Time() time.Time {
