@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	client   = NewClient("localhost:9334", "localhost:8088")
+	client   = NewClient("localhost:9333", "localhost:8888")
 	filename = "hello.txt"
 )
 
@@ -57,7 +57,7 @@ func TestVolumeSubmit(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	vol := NewVolume("localhost:8082", "localhost:8082")
+	vol := NewVolume("localhost:8080", "localhost:8080")
 	fid, size, err := vol.Submit(filename, "text/plain", file)
 	if err != nil {
 		t.Fatal(err)
@@ -120,19 +120,19 @@ func TestFilerUpload(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := client.Filer("localhost:8088").Upload("text/world.txt", "text/plain", file); err != nil {
+	if err := client.Filer("localhost:8888").Upload("text/world.txt", "text/plain", file); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestFilerDelete(t *testing.T) {
-	if err := client.Filer("localhost:8088").Delete("text/"); err != nil {
+	if err := client.Filer("localhost:8888").Delete("text/"); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestFilerDir(t *testing.T) {
-	dir, err := client.Filer("localhost:8088").Dir("/")
+	dir, err := client.Filer("localhost:8888").Dir("/")
 	if err != nil {
 		t.Fatal(err)
 	}
