@@ -31,10 +31,10 @@ func NewVolume(url, publicUrl string) *Volume {
 }
 
 // Upload File
-func (v *Volume) Upload(fid string, version int, filename, mimeType string, file io.Reader) (size int64, err error) {
+func (v *Volume) Upload(fid string, filename, mimeType string, file io.Reader, version ...int) (size int64, err error) {
 	url := v.Url + "/" + fid
-	if version > 0 {
-		url = url + "_" + strconv.Itoa(version)
+	if len(version) > 0 && version[0] > 0 {
+		url = url + "_" + strconv.Itoa(version[0])
 	}
 
 	formData, contentType, err := makeFormData(filename, mimeType, file)
