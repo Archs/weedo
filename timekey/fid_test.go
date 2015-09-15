@@ -1,4 +1,4 @@
-package fidcookies
+package timekey
 
 import (
 	"os"

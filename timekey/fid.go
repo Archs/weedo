@@ -1,4 +1,5 @@
-package fidcookies
+// Package timekey implements a customized Fid to get/set time/mime/size info in fid for seaweedfs
+package timekey
 
 import (
 	"errors"
