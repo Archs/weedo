@@ -6,11 +6,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/Archs/weedo/timekey"
 	"io"
 	"log"
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
+	"os"
+	"path"
 	"strconv"
 	"strings"
 )
@@ -144,6 +147,40 @@ func (c *Client) AssignUpload(filename, mimeType string, file io.Reader) (fid st
 	}
 	size, err = vol.Upload(fid, filename, mimeType, file)
 
+	return
+}
+
+// Assign Fid using timekey.Fid
+func (c *Client) AssignUploadTK(fullPath string) (fid string, err error) {
+	fid, err = c.Master().Assign()
+	if err != nil {
+		return
+	}
+	tkfid, err := timekey.ParseFid(fid)
+	if err != nil {
+		return
+	}
+	// insert self defined key using timekey
+	err = tkfid.InsertKeyAndCookie(fullPath)
+	if err != nil {
+		return
+	}
+	fid = tkfid.String()
+	// find vold
+	vol, err := c.Volume(fid, "")
+	if err != nil {
+		return
+	}
+	// do upload
+	r, err := os.Open(fullPath)
+	if err != nil {
+		return
+	}
+	defer r.Close()
+	// get filename
+	filename := path.Base(fullPath)
+	// upload
+	_, err = vol.Upload(fid, filename, tkfid.MimeType(), r)
 	return
 }
 
