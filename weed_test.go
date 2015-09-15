@@ -25,6 +25,22 @@ func TestAssign(t *testing.T) {
 	t.Log("assign 3", fid)
 }
 
+func TestFid(t *testing.T) {
+	fid, err := client.Master().Assign()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log("assign", fid)
+	f, err := ParseFid(fid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if f.String() != fid {
+		t.Error("Fid.String() not match")
+	}
+	t.Log("Fid.String()", f.String())
+}
+
 func TestAssginUpload(t *testing.T) {
 	file, err := os.Open(filename)
 	if err != nil {
