@@ -13,7 +13,7 @@ import (
 	"net/http"
 	"net/textproto"
 	"os"
-	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -178,7 +178,7 @@ func (c *Client) AssignUploadTK(fullPath string) (fid string, err error) {
 	}
 	defer r.Close()
 	// get filename
-	filename := path.Base(fullPath)
+	filename := filepath.Base(fullPath)
 	// upload
 	_, err = vol.Upload(fid, filename, tkfid.MimeType(), r)
 	return
