@@ -102,6 +102,11 @@ func ParseFid(s string) (fid Fid, err error) {
 	return
 }
 
+// Fid in string form
+func (f *Fid) String() string {
+	return fmt.Sprintf("%d,%x%8x", f.Id, f.Key, f.Cookie)
+}
+
 // First, contact with master server and assign a fid, then upload to volume server
 // It is same as the follow steps
 // curl http://localhost:9333/dir/assign
@@ -137,7 +142,7 @@ func (c *Client) AssignUpload(filename, mimeType string, file io.Reader) (fid st
 	if err != nil {
 		return
 	}
-	size, err = vol.Upload(fid, 0, filename, mimeType, file)
+	size, err = vol.Upload(fid, filename, mimeType, file)
 
 	return
 }
