@@ -41,7 +41,7 @@ var (
 )
 
 func uploadFile(path string) error {
-	log.Println("\t", path, "...")
+	log.Println("Uploading", path, "...")
 	fid, err := client.UploadFileTK(path)
 	if err != nil {
 		return err
@@ -108,9 +108,9 @@ func main() {
 		}
 	}
 	// print out fids
-	log.Println("Uploading done:")
+	log.Println("Upload done:")
 	for fid, fpath := range fmap {
-		println(fid, "\t", fpath)
+		log.Printf("<<<%s>>>\t%s\n", fid, fpath)
 	}
 }
 
