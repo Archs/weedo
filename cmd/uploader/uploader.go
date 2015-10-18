@@ -41,7 +41,7 @@ var (
 )
 
 func uploadFile(path string) error {
-	log.Println("Uploading", path, "...")
+	log.Println("\t", path, "...")
 	fid, err := client.UploadFileTK(path)
 	if err != nil {
 		return err
